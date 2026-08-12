@@ -88,6 +88,20 @@ public class McpToolContentValidatorTest extends ArtifactUtilProviderTestBase {
     }
 
     @Test
+    public void testMcpToolAnnotationsTitleUsesNestedPointer() throws Exception {
+        TypedContent content = resourceToTypedContentHandle("mcptool-invalid-annotations.json");
+        McpToolContentValidator validator = new McpToolContentValidator();
+        RuleViolationException error = Assertions.assertThrows(RuleViolationException.class, () -> {
+            validator.validate(ValidityLevel.FULL, content, Collections.emptyMap());
+        });
+        // The violation must point at the nested field, not at the top-level 'title'.
+        Assertions.assertTrue(error.getCauses().stream()
+                .anyMatch(v -> "/annotations/title".equals(v.getContext())));
+        Assertions.assertFalse(error.getCauses().stream()
+                .anyMatch(v -> "/title".equals(v.getContext())));
+    }
+
+    @Test
     public void testMcpToolMinimal() throws Exception {
         TypedContent content = resourceToTypedContentHandle("mcptool-minimal.json");
         McpToolContentValidator validator = new McpToolContentValidator();

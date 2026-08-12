@@ -155,7 +155,7 @@ public class McpToolContentValidator implements ContentValidator {
         }
 
         // title: optional string (fallback display name per MCP spec)
-        JsonValidationUtils.validateOptionalString(annotations, "title", violations);
+        JsonValidationUtils.validateOptionalString(annotations, "title", "/annotations", violations);
 
         // audience: optional array of strings ("user", "assistant")
         if (annotations.has("audience")) {

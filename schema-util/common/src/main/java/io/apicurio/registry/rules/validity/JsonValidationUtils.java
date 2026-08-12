@@ -18,13 +18,22 @@ public final class JsonValidationUtils {
     }
 
     /**
-     * Validates that an optional field, if present, is a string.
+     * Validates that an optional field of the root document, if present, is a string.
      */
     public static void validateOptionalString(JsonNode tree, String fieldName,
             Set<RuleViolation> violations) {
+        validateOptionalString(tree, fieldName, "", violations);
+    }
+
+    /**
+     * Validates that an optional field, if present, is a string. The base path is the JSON pointer of
+     * the node being validated, so that violations on a nested field report their full path.
+     */
+    public static void validateOptionalString(JsonNode tree, String fieldName, String basePath,
+            Set<RuleViolation> violations) {
         if (tree.has(fieldName) && !tree.get(fieldName).isTextual()) {
-            violations.add(
-                    new RuleViolation("'" + fieldName + "' field must be a string", "/" + fieldName));
+            violations.add(new RuleViolation("'" + fieldName + "' field must be a string",
+                    basePath + "/" + fieldName));
         }
     }
 
